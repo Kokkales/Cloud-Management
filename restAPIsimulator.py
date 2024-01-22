@@ -1,63 +1,89 @@
-from BasicMonitoring import VizualizeMonitoring,Monitoring
+from concurrent.futures import ThreadPoolExecutor, wait, FIRST_COMPLETED
+from BasicMonitoring import Monitoring
 import requests
 import time
 import random
+import psutil
+import threading
 
-NUMBER_OF_BATCHES=5
-MAXIMUM_BATCH_SIZE=5
-MINIMUM_BATCH_SIZE=1
+NUMBER_OF_BATCHES = 5
+MAXIMUM_BATCH_SIZE = 5
+MINIMUM_BATCH_SIZE = 1
 
-def createRequest(endpoint,method,payload):
-    url=f"http://localhost:5000/{endpoint}"
-    headers={'Content-Type':'application/json'}
-    if method=='GET':
-        resp=requests.get(url,headers=headers)
-    elif method=='POST':
-        resp=requests.post(url,headers=headers,json=payload)
-    elif method=='DELETE':
-        resp=requests.delete(url,headers=headers)
-    elif method=='PUT':
-        resp=requests.put(url,headers=headers,json=payload)
+def create_request(endpoint, method, payload):
+    url = f"http://localhost:5000/{endpoint}"
+    headers = {'Content-Type': 'application/json'}
+    if method == 'GET':
+        resp = requests.get(url, headers=headers)
+    elif method == 'POST':
+        resp = requests.post(url, headers=headers, json=payload)
+    elif method == 'DELETE':
+        resp = requests.delete(url, headers=headers)
+    elif method == 'PUT':
+        resp = requests.put(url, headers=headers, json=payload)
     return resp
 
-mon_obj = Monitoring([],[])
-responseTimes=[]
-for i in range(NUMBER_OF_BATCHES):  # Number of batches
-    print(f"\nBatch Number: {i}")
-    batch_size = random.randint(MINIMUM_BATCH_SIZE,MAXIMUM_BATCH_SIZE)  # Random batch size
-    # frequency = random.uniform(1, 5)  # Random frequency (sleep duration)
+response_times = []
+lock = threading.Lock()
 
-    # Generate a batch of requests
-    batch = [
-        {'method': 'GET', 'endpoint': 'get'},
-        {'method': 'POST', 'endpoint': 'post', 'payload': {'key': 'value'}},
-        {'method': 'DELETE', 'endpoint': 'delete'},
-        {'method': 'PUT', 'endpoint': 'put', 'payload': {'key': 'value'}},
-    ]
+def run_request_with_monitoring(request, mon_obj):
+    method = request['method']
+    endpoint = request['endpoint']
+    payload = request.get('payload')
 
-    for _ in range(batch_size):
-        request = random.choice(batch)
-        method = request['method']
-        endpoint = request['endpoint']
-        payload = request.get('payload')
+    # Start monitoring CPU usage
+    mon_obj.event.clear()
+    monitoring_thread = threading.Thread(target=mon_obj.monitor_cpu)
+    monitoring_thread.start()
 
-        # Make a request
-        startTime=time.time()
-        # ramResults=mon_obj.monitor_ram(int(8))
-        cpuResults=mon_obj.monitor_cpu(int(8))
-        response = createRequest(endpoint, method, payload)
-        endTime=time.time()
-        responseTime=endTime-startTime
-        print(f'Response time: {responseTime}') # other way::-> response.elapsed.total_seconds()
-        responseTimes.append(responseTime)
+    # Make a request
+    start_time = time.time()
+    response = create_request(endpoint, method, payload)
+    end_time = time.time()
 
-        # Process the response (you can customize this based on your needs)
-        print(f"Request {method} {endpoint} - Status Code: {response.status_code}")
+    # Stop monitoring after the request is made
+    mon_obj.event.set()
+    monitoring_thread.join()  # Wait for the monitoring thread to finish
 
-    # Sleep to simulate different frequencies between batches
-    # time.sleep(frequency)
-print(f'\nTail latency {max(responseTimes)}')
-responseTimes.sort(reverse=True)  # Sort response times in descending order
-print("\nResponse Times (sorted):", responseTimes)
-tail_latency = responseTimes[int(0.99 * len(responseTimes))]  # 99th percentile as an example
+    # Process the response (you can customize this based on your needs)
+    response_time = end_time - start_time
+
+    # Use a lock to protect shared resource
+    with lock:
+        response_times.append(response_time)
+
+    print(f"Request {method} {endpoint} - Status Code: {response.status_code} - Response Time: {response_time} seconds - CPU: {mon_obj.cpu_util}")
+
+event = threading.Event()
+mon_obj = Monitoring([], [], event)
+
+with ThreadPoolExecutor() as executor:
+    futures = []
+
+    for i in range(NUMBER_OF_BATCHES):
+        print(f"\nBatch Number: {i}")
+        batch_size = random.randint(MINIMUM_BATCH_SIZE, MAXIMUM_BATCH_SIZE)
+
+        batch = [
+            {'method': 'GET', 'endpoint': 'get'},
+            {'method': 'POST', 'endpoint': 'post', 'payload': {'key': 'value'}},
+            {'method': 'DELETE', 'endpoint': 'delete'},
+            {'method': 'PUT', 'endpoint': 'put', 'payload': {'key': 'value'}},
+        ]
+
+        for _ in range(batch_size):
+            # print('new request')
+            request = random.choice(batch)
+            future = executor.submit(run_request_with_monitoring, request, mon_obj)
+            futures.append(future)
+
+    # Wait for all futures to complete without blocking the main thread
+    done, _ = wait(futures, return_when=FIRST_COMPLETED)
+    for future in done:
+        future.result()
+
+print(f'\nTail latency: {max(response_times):.6f} seconds')
+response_times.sort(reverse=True)
+print("\nResponse Times (sorted):", response_times)
+tail_latency = response_times[int(0.99 * len(response_times))]
 print(f"\nTail Latency (99th percentile): {tail_latency:.6f} seconds")

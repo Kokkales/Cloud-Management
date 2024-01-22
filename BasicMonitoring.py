@@ -27,11 +27,12 @@ class BasicMonitoring:
 
 class Monitoring(BasicMonitoring):
   __num_obj=0
-  def __init__(self, cpu_util, ram_util):
-    Monitoring.__num_obj+=1
+  def __init__(self, cpu_util, ram_util, event):
+    Monitoring.__num_obj += 1
     self.cpu_util = cpu_util
-    self.ram_util=ram_util
-    self._timestamp=time.time()
+    self.ram_util = ram_util
+    self._timestamp = time.time()
+    self.event = event  # Event to signal the end of CPU monitoring
 
   def __call__(self):
     print ("CPU utilization: " + str(self.cpu_util))
@@ -47,10 +48,16 @@ class Monitoring(BasicMonitoring):
   def get_num_obj(cls):
     return cls.__num_obj
 
-  def monitor_cpu(self, num_steps, time_step=1):
-    for i in range(num_steps):
-      self.cpu_util.append(psutil.cpu_percent(interval=None))
-      time.sleep(time_step)
+#   def monitor_cpu(self, num_steps, time_step=1):
+#     for i in range(num_steps):
+#         if self.event.is_set():
+#             break  # Stop monitoring if the event is set
+#         self.cpu_util.append(psutil.cpu_percent(interval=None))
+#         time.sleep(time_step)
+  def monitor_cpu(self, time_step=1):
+    while not self.event.is_set():
+        self.cpu_util.append(psutil.cpu_percent(interval=None))
+        time.sleep(time_step)
 
   def monitor_ram(self, num_steps, time_step=1):
     for i in range(num_steps):
