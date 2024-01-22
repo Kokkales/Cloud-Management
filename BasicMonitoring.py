@@ -7,6 +7,7 @@ from scipy import stats
 import statistics
 import random
 import matplotlib.pyplot as plt
+import os
 
 class BasicMonitoring:
   def __init__(self, cpu_util, ram_util):
@@ -57,12 +58,13 @@ class Monitoring(BasicMonitoring):
   def monitor_cpu(self, time_step=1):
     while not self.event.is_set():
         self.cpu_util.append(psutil.cpu_percent(interval=None))
+        # self.cpu_util.append(os.cpu_percent(interval=None))
         time.sleep(time_step)
 
-  def monitor_ram(self, num_steps, time_step=1):
-    for i in range(num_steps):
-      self.ram_util.append(psutil.virtual_memory()[2])
-      time.sleep(time_step)
+  def monitor_ram(self,time_step=1):
+    while not self.event.is_set():
+        self.ram_util.append(psutil.virtual_memory().percent)
+        time.sleep(time_step)
 
   def get_timestamp(self):
     print(time.ctime(self._timestamp))
