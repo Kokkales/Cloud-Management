@@ -1,3 +1,4 @@
+from BasicMonitoring import VizualizeMonitoring,Monitoring
 import requests
 import time
 import random
@@ -19,6 +20,8 @@ def createRequest(endpoint,method,payload):
         resp=requests.put(url,headers=headers,json=payload)
     return resp
 
+mon_obj = Monitoring([],[])
+responseTimes=[]
 for i in range(NUMBER_OF_BATCHES):  # Number of batches
     print(f"\nBatch Number: {i}")
     batch_size = random.randint(MINIMUM_BATCH_SIZE,MAXIMUM_BATCH_SIZE)  # Random batch size
@@ -39,10 +42,22 @@ for i in range(NUMBER_OF_BATCHES):  # Number of batches
         payload = request.get('payload')
 
         # Make a request
+        startTime=time.time()
+        # ramResults=mon_obj.monitor_ram(int(8))
+        cpuResults=mon_obj.monitor_cpu(int(8))
         response = createRequest(endpoint, method, payload)
+        endTime=time.time()
+        responseTime=endTime-startTime
+        print(f'Response time: {responseTime}') # other way::-> response.elapsed.total_seconds()
+        responseTimes.append(responseTime)
 
         # Process the response (you can customize this based on your needs)
         print(f"Request {method} {endpoint} - Status Code: {response.status_code}")
 
     # Sleep to simulate different frequencies between batches
     # time.sleep(frequency)
+print(f'\nTail latency {max(responseTimes)}')
+responseTimes.sort(reverse=True)  # Sort response times in descending order
+print("\nResponse Times (sorted):", responseTimes)
+tail_latency = responseTimes[int(0.99 * len(responseTimes))]  # 99th percentile as an example
+print(f"\nTail Latency (99th percentile): {tail_latency:.6f} seconds")
