@@ -28,10 +28,11 @@ class BasicMonitoring:
 
 class Monitoring(BasicMonitoring):
   __num_obj=0
-  def __init__(self, cpu_util, ram_util, event):
+  def __init__(self, cpu_util, ram_util,bw_util, event):
     Monitoring.__num_obj += 1
     self.cpu_util = cpu_util
     self.ram_util = ram_util
+    self.bw_util= bw_util
     self._timestamp = time.time()
     self.event = event  # Event to signal the end of CPU monitoring
 
@@ -65,6 +66,24 @@ class Monitoring(BasicMonitoring):
     while not self.event.is_set():
         self.ram_util.append(psutil.virtual_memory().percent)
         time.sleep(time_step)
+
+  def monitor_bw(self,time_step=1):
+    while not self.event.is_set():
+      initial_stats = psutil.net_io_counters()
+      time.sleep(1) # Wait for the specified interval
+      final_stats = psutil.net_io_counters() # Get the final network usage
+
+      # Calculate the total bandwidth
+      sent_bytes = final_stats.bytes_sent - initial_stats.bytes_sent
+      received_bytes = final_stats.bytes_recv - initial_stats.bytes_recv
+
+      # Convert bytes to bits and calculate the total bandwidth in bits per second
+      total_bandwidth = (sent_bytes + received_bytes) * 8 / 1
+      # total_bandwidth = (sent_bytes + received_bytes) /1024**2
+
+      self.bw_util.append(total_bandwidth)
+        # self.ram_util.append(psutil.virtual_memory().percent)
+        # time.sleep(time_step)
 
   def get_timestamp(self):
     print(time.ctime(self._timestamp))

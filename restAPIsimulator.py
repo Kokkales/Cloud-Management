@@ -38,6 +38,9 @@ def run_request_with_monitoring(request, mon_obj):
     mon_obj.event.clear()
     ram_monitoring_thread = threading.Thread(target=mon_obj.monitor_ram)
     ram_monitoring_thread.start()
+    mon_obj.event.clear()
+    bw_monitoring_thread = threading.Thread(target=mon_obj.monitor_bw)
+    bw_monitoring_thread.start()
 
     # Make a request
     start_time = time.time()
@@ -48,6 +51,7 @@ def run_request_with_monitoring(request, mon_obj):
     mon_obj.event.set()
     cpu_monitoring_thread.join()  # Wait for the monitoring thread to finish
     ram_monitoring_thread.join()
+    bw_monitoring_thread.join()
 
     # Process the response (you can customize this based on your needs)
     response_time = end_time - start_time
@@ -56,7 +60,7 @@ def run_request_with_monitoring(request, mon_obj):
     with lock:
         response_times.append(response_time)
 
-    print(f"Request {method} {endpoint}:\nStatus Code: {response.status_code}\nResponse Time: {response_time} seconds\nCPU: {mon_obj.cpu_util}\nRAM: {mon_obj.ram_util}")
+    print(f"Request {method} {endpoint}:\nStatus Code: {response.status_code}\nResponse Time: {response_time} (sec)\nCPU: {mon_obj.cpu_util} (%)\nRAM: {mon_obj.ram_util} (%)\nBandwith: {mon_obj.bw_util} (bits/sec)")
 
 event = threading.Event()
 
@@ -75,7 +79,7 @@ for i in range(NUMBER_OF_BATCHES):
     ]
     for _ in range(batch_size):
         with ThreadPoolExecutor() as executor:
-                mon_obj = Monitoring([], [], event)
+                mon_obj = Monitoring([], [],[], event)
                 # print('new request')
                 request = random.choice(batch)
                 future = executor.submit(run_request_with_monitoring, request, mon_obj)
