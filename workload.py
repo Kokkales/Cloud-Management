@@ -179,13 +179,11 @@ class WorkloadCreator():
 
             if load_type=='stable':
                 batch_size = self.request_num // self.batches_num
-            elif load_type=='normal':
+            elif load_type=='normal': #TODO
                 batch_size = random.randint(1, self.request_num // self.batches_num)
-            elif load_type=='peak':
+            elif load_type=='peak': #TODO
                 batch_size = self.request_num // self.batches_num
-                if i == random.randint(1,9):
-                    batch_size *= 3  # Triple the requests in the peak batch
-            else:
+            else: #TODO
                 batch_size = self.request_num // self.batches_num
 
                 if i == random.randint(1,9):
@@ -234,8 +232,12 @@ class WorkloadCreator():
             self.ram_each_batch.append(ram_batch_sum/batch_size)
             self.bw_each_batch.append(bw_batch_sum/batch_size)
             self.response_times.append(response_times_sum)
-            if self.sleep_time:
-                time.sleep(self.sleep_time)  # Sleep time between each batch
+            if self.sleep_time==-1:
+                time.sleep(random.int(1,5))  # Sleep time between each batch
+            elif self.sleep_time!=0:
+                time.sleep(self.sleep_time)
+            else:
+                continue
         if post_count==0:
             post_count=1
         if get_count==0:
@@ -288,7 +290,7 @@ def create_request(endpoint, method, payload):
 
 
 lock = threading.Lock()
-# returns per request the total->CPU,RAM,BW,response time
+# returns per request the average->CPU,RAM,BW,response time
 def run_request_with_monitoring(request, mon_obj):
     method = request['method']
     endpoint = request['endpoint']
@@ -320,4 +322,4 @@ def run_request_with_monitoring(request, mon_obj):
 
     # print(f"Request {method} {endpoint}:\nStatus Code: {response.status_code}\nResponse Time: {response_time} (sec)\nCPU: {mon_obj.cpu_util} (%)\nRAM: {mon_obj.ram_util} (%)\nBandwidth: {mon_obj.bw_util} (bits/sec)")
 
-    return sum(mon_obj.cpu_util),sum(mon_obj.ram_util),sum(mon_obj.bw_util),response_time
+    return sum(mon_obj.cpu_util)/len(mon_obj.cpu_util),sum(mon_obj.ram_util)/len(mon_obj.ram_util),sum(mon_obj.bw_util)/len(mon_obj.bw_util),response_time

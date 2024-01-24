@@ -29,10 +29,14 @@ def printResultsPerBatch():
     print(f'Avg BW: {workload_creator.get_bw_average_method_delete()}\n')
     print(f'Response Time:: {workload_creator.get_response_times()}')
     print('\n')
-    visualiser.plot_batch_oriented(workload_creator.get_cpu_each_batch(),workload_creator.get_ram_each_batch(),workload_creator.get_bw_each_batch())
+    visualiser.plot_cpu_ram_bw(workload_creator.get_cpu_each_batch(),workload_creator.get_ram_each_batch(),workload_creator.get_bw_each_batch(),type='batches')
+    visualiser.plot_cpu_ram_bw(workload_creator.get_cpu_each_request(),workload_creator.get_ram_each_request(),workload_creator.get_bw_each_request(),type='request')
+    # visualiser.plot_request_types_usage(workload_creator.get_cpu_average_method_post(),workload_creator.get_cpu_average_method_get(),workload_creator.get_cpu_average_method_put(),workload_creator.get_cpu_average_method_delete(),workload_creator.get_ram_average_method_post(),workload_creator.get_ram_average_method_get(),workload_creator.get_ram_average_method_put(),workload_creator.get_ram_average_method_delete())
+    # visualiser.plot_latency(2,3)
 
 
-workload_creator = WorkloadCreator(request_num=10,batches_num=5,sleep_time=0)
+
+workload_creator = WorkloadCreator(request_num=10,batches_num=5,sleep_time=0) #-1 means random sleep time in each batch
 visualiser=Plotter(request_num=workload_creator.get_request_number(),batches_num=workload_creator.get_batches_number(),sleep_time=0)
 
 # Stable Load

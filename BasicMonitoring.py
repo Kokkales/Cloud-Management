@@ -76,11 +76,13 @@ class Monitoring(BasicMonitoring):
       # Calculate the total bandwidth
       sent_bytes = final_stats.bytes_sent - initial_stats.bytes_sent
       received_bytes = final_stats.bytes_recv - initial_stats.bytes_recv
-
       # Convert bytes to bits and calculate the total bandwidth in bits per second
+      # total_bandwidth = (sent_bytes + received_bytes)  #bytes
       total_bandwidth = (sent_bytes + received_bytes) * 8 / 1
-      total_bandwidth = total_bandwidth / 1e9
-      # total_bandwidth = (sent_bytes + received_bytes) /1024**2
+      total_bandwidth = total_bandwidth / 10**3 # Kb/s
+      # total_bandwidth = total_bandwidth / 10**6 # Mb/s
+      # total_bandwidth = total_bandwidth / 1e9
+      # total_bandwidth = (sent_bytes + received_bytes) /1024**2 #Gb/s
 
       self.bw_util.append(total_bandwidth)
         # self.ram_util.append(psutil.virtual_memory().percent)
