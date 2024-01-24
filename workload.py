@@ -7,7 +7,7 @@ import psutil
 import threading
 
 class WorkloadCreator():
-    def __init__(self,cpu_each_batch=[],ram_each_batch=[],bw_each_batch=[],cpu_each_request=[],ram_each_request=[],bw_each_request=[],cpu_average_method_post=0,ram_average_method_post=0,bw_average_method_post=0,cpu_average_method_get=0,ram_average_method_get=0,bw_average_method_get=0,cpu_average_method_put=0,ram_average_method_put=0,bw_average_method_put=0,cpu_average_method_delete=0,ram_average_method_delete=0,bw_average_method_delete=0):
+    def __init__(self,cpu_each_batch=[],ram_each_batch=[],bw_each_batch=[],cpu_each_request=[],ram_each_request=[],bw_each_request=[],cpu_average_method_post=0,ram_average_method_post=0,bw_average_method_post=0,cpu_average_method_get=0,ram_average_method_get=0,bw_average_method_get=0,cpu_average_method_put=0,ram_average_method_put=0,bw_average_method_put=0,cpu_average_method_delete=0,ram_average_method_delete=0,bw_average_method_delete=0,response_times=[],batches_num=5,request_num=10,sleep_time=0):
         # Batch
         self.cpu_each_batch=cpu_each_batch
         self.ram_each_batch=ram_each_batch
@@ -32,6 +32,12 @@ class WorkloadCreator():
         self.cpu_average_method_delete=cpu_average_method_delete
         self.ram_average_method_delete=ram_average_method_delete
         self.bw_average_method_delete=bw_average_method_delete
+
+        self.response_times=response_times
+
+        self.batches_num=batches_num
+        self.request_num=request_num
+        self.sleep_time=sleep_time
 
     # Getter method for cpu_each_batch
     def get_cpu_each_batch(self):
@@ -102,6 +108,15 @@ class WorkloadCreator():
     def get_bw_average_method_delete(self):
         return self.bw_average_method_delete
 
+    def get_batches_number(self):
+        return self.batches_num
+
+    def get_request_number(self):
+        return self.request_num
+
+    def get_response_times(self):
+        return self.response_times
+
     def create_batch(self, batch_size):
         batch = [
             {'method': 'GET', 'endpoint': 'get'},
@@ -111,7 +126,8 @@ class WorkloadCreator():
         ]
         return [random.choice(batch) for _ in range(batch_size)]
 
-    def create_load(self, request_num, batches_num, sleep_time=True,load_type='normal'):
+    def create_load(self,load_type='normal'):
+        # self.__init__()
         # Batch init
         self.cpu_each_batch=[]
         self.ram_each_batch=[]
@@ -149,26 +165,28 @@ class WorkloadCreator():
         bw_sum_method_delete=0
         delete_count=0
 
+        self.response_times = []
+
         print(f"{load_type}------------------------------------------")
 
-        response_times = []
         futures = []
-        for i in range(batches_num):
+        for i in range(self.batches_num):
             # stats
             cpu_batch_sum=0
             ram_batch_sum=0
             bw_batch_sum=0
+            response_times_sum=0
 
             if load_type=='stable':
-                batch_size = request_num // batches_num
+                batch_size = self.request_num // self.batches_num
             elif load_type=='normal':
-                batch_size = random.randint(1, request_num // batches_num)
+                batch_size = random.randint(1, self.request_num // self.batches_num)
             elif load_type=='peak':
-                batch_size = request_num // batches_num
+                batch_size = self.request_num // self.batches_num
                 if i == random.randint(1,9):
                     batch_size *= 3  # Triple the requests in the peak batch
             else:
-                batch_size = request_num // batches_num
+                batch_size = self.request_num // self.batches_num
 
                 if i == random.randint(1,9):
                     batch_size *= 3  # Triple the requests in the spike batch
@@ -185,7 +203,7 @@ class WorkloadCreator():
                     self.cpu_each_request.append(cpu)
                     self.ram_each_request.append(ram)
                     self.bw_each_request.append(bw)
-                    response_times.append(request_response_time)
+                    response_times_sum+=request_response_time
                     cpu_batch_sum+=cpu
                     ram_batch_sum+=ram
                     bw_batch_sum+=bw
@@ -209,14 +227,15 @@ class WorkloadCreator():
                         ram_sum_method_delete+=ram
                         bw_sum_method_delete+=bw
                         delete_count+=1
-            cpu_per_batch_means.append(cpu_batch_sum/batch_size)
-            ram_per_batch_means.append(ram_batch_sum/batch_size)
-            bw_per_batch_means.append(bw_batch_sum/batch_size)
-            self.cpu_each_batch.append(cpu_batch_sum)
-            self.ram_each_batch.append(ram_batch_sum)
-            self.bw_each_batch.append(bw_batch_sum)
-            if sleep_time:
-                time.sleep(1)  # Adjust sleep time as needed
+            # cpu_per_batch_means.append(cpu_batch_sum/batch_size)
+            # ram_per_batch_means.append(ram_batch_sum/batch_size)
+            # bw_per_batch_means.append(bw_batch_sum/batch_size)
+            self.cpu_each_batch.append(cpu_batch_sum/batch_size)
+            self.ram_each_batch.append(ram_batch_sum/batch_size)
+            self.bw_each_batch.append(bw_batch_sum/batch_size)
+            self.response_times.append(response_times_sum)
+            if self.sleep_time:
+                time.sleep(self.sleep_time)  # Sleep time between each batch
         if post_count==0:
             post_count=1
         if get_count==0:

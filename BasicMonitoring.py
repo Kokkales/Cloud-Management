@@ -64,7 +64,7 @@ class Monitoring(BasicMonitoring):
 
   def monitor_ram(self,time_step=1):
     while not self.event.is_set():
-        self.ram_util.append(psutil.virtual_memory().percent)
+        self.ram_util.append(psutil.virtual_memory()[2])
         time.sleep(time_step)
 
   def monitor_bw(self,time_step=1):
@@ -79,6 +79,7 @@ class Monitoring(BasicMonitoring):
 
       # Convert bytes to bits and calculate the total bandwidth in bits per second
       total_bandwidth = (sent_bytes + received_bytes) * 8 / 1
+      total_bandwidth = total_bandwidth / 1e9
       # total_bandwidth = (sent_bytes + received_bytes) /1024**2
 
       self.bw_util.append(total_bandwidth)
