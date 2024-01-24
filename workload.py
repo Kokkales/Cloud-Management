@@ -170,6 +170,8 @@ class WorkloadCreator():
         print(f"{load_type}------------------------------------------")
 
         futures = []
+        batch_size_sum=0
+        new_req_num=self.request_num
         for i in range(self.batches_num):
             # stats
             cpu_batch_sum=0
@@ -179,8 +181,22 @@ class WorkloadCreator():
 
             if load_type=='stable':
                 batch_size = self.request_num // self.batches_num
-            elif load_type=='normal': #TODO
-                batch_size = random.randint(1, self.request_num // self.batches_num)
+                remaining_requests = self.request_num % self.batches_num
+                if i < remaining_requests:
+                    current_batch_size = batch_size + 1
+                else:
+                    current_batch_size = batch_size
+                batch_size=current_batch_size
+            elif load_type=='normal':
+                remaining_requests = self.request_num - i
+                max_batch_size = remaining_requests // (self.batches_num - i)
+
+                if i == self.batches_num - 1:
+                    # If it's the last batch, include all remaining requests
+                    batch_size = remaining_requests
+                else:
+                    current_batch_size = random.randint(1, max_batch_size)
+                    batch_size = current_batch_size
             elif load_type=='peak': #TODO
                 batch_size = self.request_num // self.batches_num
             else: #TODO
@@ -190,7 +206,8 @@ class WorkloadCreator():
                     batch_size *= 3  # Triple the requests in the spike batch
 
             batch = self.create_batch(batch_size)
-            for _ in range(batch_size):
+            print(batch_size)
+            for k in range(batch_size):
                 with ThreadPoolExecutor() as executor:
                     mon_obj = Monitoring([], [], [], threading.Event())
                     request = random.choice(batch)
