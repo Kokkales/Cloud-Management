@@ -4,12 +4,14 @@ import ast
 from plotter import Plotter
 
 class ReportGenerator:
+    def __init__(self,folder_path):
+        self.folder_path=folder_path
 
     def save_to_file(self,id,file_path,load_type, timestamp,request_number,batches_number,sleep_time,cpu_each_batch,ram_each_batch,bw_each_batch,cpu_each_request,ram_each_request,bw_each_request,cpu_average_method_post,ram_average_method_post,bw_average_method_post,cpu_average_method_get,ram_average_method_get,bw_average_method_get,cpu_average_method_put,ram_average_method_put,bw_average_method_put,cpu_average_method_delete,ram_average_method_delete,bw_average_method_delete,response_times,tail_latency):
         with open(file_path, 'w') as file:
             file.write('&')
-            file.write(f'ID: {id}')
-            file.write(f'Load Type: {load_type}')
+            file.write(f'ID: {id}\n')
+            file.write(f'Load Type: {load_type}\n')
             file.write(f'Timestamp: {timestamp}\n')
             file.write(f"Concept\nRequests Number:{request_number}\nBatches Number:{batches_number}\nSleep time:{sleep_time}\n")
             file.write('-------BATCH-------\n')
@@ -58,6 +60,16 @@ class ReportGenerator:
             if timestamp_match:
                 timestamp = timestamp_match.group(1)
                 print(f'Timestamp: {timestamp}')
+
+            id_match = re.search(r'ID: (.+)', content)
+            if id_match:
+                id = id_match.group(1)
+                print(f'id: {id}')
+
+            load_type_match = re.search(r'Load Type: (.+)', content)
+            if load_type_match:
+                load_type = load_type_match.group(1)
+                print(f'load_type: {load_type}')
 
             requests_match = re.search(r'Requests Number:(\d+)', content)
             batches_match = re.search(r'Batches Number:(\d+)', content)
@@ -170,13 +182,13 @@ class ReportGenerator:
 
             # Visualize data
             if batch_cpu_data and batch_ram_data and batch_bw_data:
-                visualiser.plot_cpu_ram_bw(batch_cpu_data, batch_ram_data, batch_bw_data, type='batches',method=load_type)
-                visualiser.plot_cpu_ram_bw(requests_cpu_data, requests_ram_data,requests_bw_data, type='request',method=load_type)
-                visualiser.plot_request_types_usage(avg_post_cpu_data, avg_get_cpu_data, avg_put_cpu_data, avg_delete_cpu_data, avg_post_ram_data, avg_get_ram_data, avg_put_ram_data, avg_delete_ram_data,method=load_type)
+                visualiser.plot_cpu_ram_bw(self.folder_path,batch_cpu_data, batch_ram_data, batch_bw_data, type='batches',method=load_type)
+                visualiser.plot_cpu_ram_bw(self.folder_path,requests_cpu_data, requests_ram_data,requests_bw_data, type='request',method=load_type)
+                visualiser.plot_request_types_usage(self.folder_path,avg_post_cpu_data, avg_get_cpu_data, avg_put_cpu_data, avg_delete_cpu_data, avg_post_ram_data, avg_get_ram_data, avg_put_ram_data, avg_delete_ram_data,method=load_type)
         return
 
 
     def plot_table(self,stable_response_times,stable_tail_latency,normal_response_times,normal_tail_latency,peak_response_times,peak_tail_latency,sleep_time):
         visualiser = Plotter(sleep_time=sleep_time)
-        visualiser.plot_final_results(stable_response_times,stable_tail_latency,normal_response_times,normal_tail_latency,peak_response_times,peak_tail_latency)
+        visualiser.plot_final_results(self.folder_path,stable_response_times,stable_tail_latency,normal_response_times,normal_tail_latency,peak_response_times,peak_tail_latency)
         return
