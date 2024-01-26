@@ -89,7 +89,7 @@ class Monitoring(BasicMonitoring):
         # time.sleep(time_step)
 
   def get_timestamp(self):
-    print(time.ctime(self._timestamp))
+    return time.ctime(self._timestamp)
 
   def save_cpu_ram(self, filepath):
     all_metrics=[]

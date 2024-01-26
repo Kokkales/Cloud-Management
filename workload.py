@@ -7,7 +7,7 @@ import psutil
 import threading
 
 class WorkloadCreator():
-    def __init__(self,cpu_each_batch=[],ram_each_batch=[],bw_each_batch=[],cpu_each_request=[],ram_each_request=[],bw_each_request=[],cpu_average_method_post=0,ram_average_method_post=0,bw_average_method_post=0,cpu_average_method_get=0,ram_average_method_get=0,bw_average_method_get=0,cpu_average_method_put=0,ram_average_method_put=0,bw_average_method_put=0,cpu_average_method_delete=0,ram_average_method_delete=0,bw_average_method_delete=0,response_times=[],batches_num=5,request_num=10,sleep_time=0):
+    def __init__(self,cpu_each_batch=[],ram_each_batch=[],bw_each_batch=[],cpu_each_request=[],ram_each_request=[],bw_each_request=[],cpu_average_method_post=0,ram_average_method_post=0,bw_average_method_post=0,cpu_average_method_get=0,ram_average_method_get=0,bw_average_method_get=0,cpu_average_method_put=0,ram_average_method_put=0,bw_average_method_put=0,cpu_average_method_delete=0,ram_average_method_delete=0,bw_average_method_delete=0,response_times=[],batches_num=5,request_num=10,sleep_time=0,timestamp=None):
         # Batch
         self.cpu_each_batch=cpu_each_batch
         self.ram_each_batch=ram_each_batch
@@ -38,6 +38,7 @@ class WorkloadCreator():
         self.batches_num=batches_num
         self.request_num=request_num
         self.sleep_time=sleep_time
+        self.timestamp=timestamp
 
     # Getter method for cpu_each_batch
     def get_cpu_each_batch(self):
@@ -116,6 +117,10 @@ class WorkloadCreator():
 
     def get_response_times(self):
         return self.response_times
+
+    def get_timestamp(self):
+        self.timestamp=time.ctime(time.time())
+        return self.timestamp
 
     def create_batch(self, batch_size):
         batch = [

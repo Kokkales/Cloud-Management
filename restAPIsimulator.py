@@ -3,6 +3,8 @@ from workload import WorkloadCreator
 from plotter import Plotter
 
 def printResultsPerBatch():
+    print(f'Timestamp: {workload_creator.get_timestamp()}')
+    print(f"Concept\nRequests Number:{workload_creator.get_request_number()}\nBatches Number:{workload_creator.get_batches_number()}\nSleep time:{workload_creator.sleep_time}")
     print('-------BATCH-------')
     print(f'CPU: {workload_creator.get_cpu_each_batch()}')
     print(f'RAM: {workload_creator.get_ram_each_batch()}')
@@ -36,7 +38,7 @@ def printResultsPerBatch():
 
 
 
-workload_creator = WorkloadCreator(request_num=20,batches_num=8,sleep_time=0) #-1 means random sleep time in each batch
+workload_creator = WorkloadCreator(request_num=5,batches_num=2,sleep_time=0) #-1 means random sleep time in each batch
 visualiser=Plotter(request_num=workload_creator.get_request_number(),batches_num=workload_creator.get_batches_number(),sleep_time=0)
 
 # Stable Load
