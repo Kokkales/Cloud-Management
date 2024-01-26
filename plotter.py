@@ -15,7 +15,7 @@ class Plotter:
         self.batches_num=batches_num
         self.sleep_time=sleep_time
 
-    def plot_cpu_ram_bw(self,cpu_values,ram_values,bw_values,type='batches'):
+    def plot_cpu_ram_bw(self,cpu_values,ram_values,bw_values,type='batches',method='Normal'):
         if type == 'batches':
             # batch_numbers = list(range(1, self.batches_num + 1))
             batch_numbers = list(range(1, len(cpu_values) + 1))
@@ -51,6 +51,9 @@ class Plotter:
         # Adjust layout to prevent clipping of titles
         plt.tight_layout()
 
+        # Save the figure
+        plt.savefig(f'./plots/{type}{method}')
+
         # Display the subplots
         plt.show()
 
@@ -77,7 +80,7 @@ class Plotter:
     def plot_time_oriented():
         return
 
-    def plot_request_types_usage(self,cpu_post_value,cpu_get_value,cpu_put_value,cpu_delete_value,ram_post_value,ram_get_value,ram_put_value,ram_delete_value):
+    def plot_request_types_usage(self,cpu_post_value,cpu_get_value,cpu_put_value,cpu_delete_value,ram_post_value,ram_get_value,ram_put_value,ram_delete_value,method):
         # Sample data
         categories = ['GET', 'POST', 'PUT', 'DELETE']
         values1 = [cpu_post_value,cpu_get_value,cpu_put_value,cpu_delete_value]
@@ -101,7 +104,8 @@ class Plotter:
 
         # Adding legend
         plt.legend()
-
+        # Save the figure
+        plt.savefig(f'./plots/requestTypes{method}')
         # Display the chart
         plt.show()
         # categories = ['GET', 'POST', 'PUT', 'DELETE']

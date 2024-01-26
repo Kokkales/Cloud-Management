@@ -37,12 +37,12 @@ def printResultsToFile(file_path):
         file.write(f'DELETE Avg BW: {workload_creator.get_bw_average_method_delete()}\n\n')
         file.write(f'Response Time:: {workload_creator.get_response_times()}\n\n')
         file.write('\n\n')
-        visualiser.plot_cpu_ram_bw(workload_creator.get_cpu_each_batch(), workload_creator.get_ram_each_batch(), workload_creator.get_bw_each_batch(), type='batches')
+        # visualiser.plot_cpu_ram_bw(workload_creator.get_cpu_each_batch(), workload_creator.get_ram_each_batch(), workload_creator.get_bw_each_batch(), type='batches')
         # visualiser.plot_cpu_ram_bw(workload_creator.get_cpu_each_request(), workload_creator.get_ram_each_request(), workload_creator.get_bw_each_request(), type='request')
         # visualiser.plot_request_types_usage(workload_creator.get_cpu_average_method_post(), workload_creator.get_cpu_average_method_get(), workload_creator.get_cpu_average_method_put(), workload_creator.get_cpu_average_method_delete(), workload_creator.get_ram_average_method_post(), workload_creator.get_ram_average_method_get(), workload_creator.get_ram_average_method_put(), workload_creator.get_ram_average_method_delete())
         # visualiser.plot_latency(2, 3)
 
-def visualize_results_from_file(file_path):
+def visualize_results_from_file(file_path,method):
     with open(file_path, 'r') as file:
         content = file.read()
         last_ampersand_index = content.rfind('&')
@@ -165,9 +165,9 @@ def visualize_results_from_file(file_path):
 
         # Visualize data
         if batch_cpu_data and batch_ram_data and batch_bw_data:
-            visualiser.plot_cpu_ram_bw(batch_cpu_data, batch_ram_data, batch_bw_data, type='batches')
-            # visualiser.plot_cpu_ram_bw(requests_cpu_data, requests_ram_data,requests_bw_data, type='request')
-            # visualiser.plot_request_types_usage(avg_post_cpu_data, avg_get_cpu_data, avg_put_cpu_data, avg_delete_cpu_data, avg_post_ram_data, avg_get_ram_data, avg_put_ram_data, avg_delete_ram_data,)
+            visualiser.plot_cpu_ram_bw(batch_cpu_data, batch_ram_data, batch_bw_data, type='batches',method=method)
+            visualiser.plot_cpu_ram_bw(requests_cpu_data, requests_ram_data,requests_bw_data, type='request',method=method)
+            visualiser.plot_request_types_usage(avg_post_cpu_data, avg_get_cpu_data, avg_put_cpu_data, avg_delete_cpu_data, avg_post_ram_data, avg_get_ram_data, avg_put_ram_data, avg_delete_ram_data,method=method)
             # visualiser.plot_latency(2, 3)
 
 # Set the file path
@@ -182,19 +182,19 @@ visualiser = Plotter(request_num=workload_creator.get_request_number(), batches_
 stable_futures = workload_creator.create_load(load_type='stable')
 wait(stable_futures, return_when=FIRST_COMPLETED)
 printResultsToFile(file_path)
-visualize_results_from_file(file_path)
+visualize_results_from_file(file_path,'Stable')
 
 # Normal Load
 normal_futures = workload_creator.create_load(load_type='normal')
 wait(normal_futures, return_when=FIRST_COMPLETED)
 printResultsToFile(file_path)
-visualize_results_from_file(file_path)
+visualize_results_from_file(file_path,'Normal')
 
 # Peak Load
 peak_futures = workload_creator.create_load(load_type='peak')
 wait(peak_futures, return_when=FIRST_COMPLETED)
 printResultsToFile(file_path)
-visualize_results_from_file(file_path)
+visualize_results_from_file(file_path,'Peak')
 
 # # Spike Load
 # spike_futures = workload_creator.create_load(load_type='spike')
