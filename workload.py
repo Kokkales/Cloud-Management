@@ -195,23 +195,18 @@ class WorkloadCreator():
             elif load_type=='normal':
                 remaining_requests = self.request_num - i
                 max_batch_size = remaining_requests // (self.batches_num - i)
-
                 if i == self.batches_num - 1:
-                    # If it's the last batch, include all remaining requests
                     batch_size = remaining_requests
                 else:
                     current_batch_size = random.randint(1, max_batch_size)
                     batch_size = current_batch_size
-            elif load_type=='peak': #TODO
-                batch_size = self.request_num // self.batches_num
             else: #TODO
                 batch_size = self.request_num // self.batches_num
 
-                if i == random.randint(1,9):
-                    batch_size *= 3  # Triple the requests in the spike batch
+                if i == random.randint(1,self.batches_num):
+                    batch_size *= 7  # x7 the requests in the peak batch
 
             batch = self.create_batch(batch_size)
-            print(batch_size)
             for k in range(batch_size):
                 with ThreadPoolExecutor() as executor:
                     mon_obj = Monitoring([], [], [], threading.Event())

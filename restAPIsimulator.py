@@ -6,9 +6,11 @@ import ast
 import json
 
 # Function to print results to a file
-def printResultsToFile(file_path):
-    with open(file_path, 'a') as file:
+def printResultsToFile(file_path,type,id=[0]):
+    with open(file_path, 'w') as file:
         file.write('&')
+        file.write(f'ID: {id[0]+1}')
+        file.write(f'Load Type: {type}')
         file.write(f'Timestamp: {workload_creator.get_timestamp()}\n')
         file.write(f"Concept\nRequests Number:{workload_creator.get_request_number()}\nBatches Number:{workload_creator.get_batches_number()}\nSleep time:{workload_creator.sleep_time}\n")
         file.write('-------BATCH-------\n')
@@ -181,19 +183,19 @@ visualiser = Plotter(request_num=workload_creator.get_request_number(), batches_
 # Stable Load
 stable_futures = workload_creator.create_load(load_type='stable')
 wait(stable_futures, return_when=FIRST_COMPLETED)
-printResultsToFile(file_path)
+printResultsToFile(file_path,'Stable')
 visualize_results_from_file(file_path,'Stable')
 
 # Normal Load
 normal_futures = workload_creator.create_load(load_type='normal')
 wait(normal_futures, return_when=FIRST_COMPLETED)
-printResultsToFile(file_path)
+printResultsToFile(file_path,'Normal')
 visualize_results_from_file(file_path,'Normal')
 
 # Peak Load
 peak_futures = workload_creator.create_load(load_type='peak')
 wait(peak_futures, return_when=FIRST_COMPLETED)
-printResultsToFile(file_path)
+printResultsToFile(file_path,'Peak')
 visualize_results_from_file(file_path,'Peak')
 
 # # Spike Load

@@ -107,7 +107,7 @@ class Plotter:
         # Save the figure
         plt.savefig(f'./plots/requestTypes{method}')
         # Display the chart
-        plt.show()
+        # plt.show()
         # categories = ['GET', 'POST', 'PUT', 'DELETE']
         # values = [post_value,get_value,put_value,delete_value]
 
@@ -120,7 +120,7 @@ class Plotter:
         # plt.title('CPU Usage from each request type')
 
         # # Display the chart
-        # plt.show()
+        plt.show()
         # return
 
     def plot_latency(self,response_time,tail_latency):
@@ -149,5 +149,5 @@ class Plotter:
         table.scale(1, 1.5)
 
         # Display the table
-        plt.show()
+        # plt.show()
         return
