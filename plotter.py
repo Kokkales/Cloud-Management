@@ -17,10 +17,12 @@ class Plotter:
 
     def plot_cpu_ram_bw(self,cpu_values,ram_values,bw_values,type='batches'):
         if type == 'batches':
-            batch_numbers = list(range(1, self.batches_num + 1))
+            # batch_numbers = list(range(1, self.batches_num + 1))
+            batch_numbers = list(range(1, len(cpu_values) + 1))
             x_label='Batch Number'
         else:
-            batch_numbers = list(range(1,self.request_num + 1))
+            # batch_numbers = list(range(1,self.request_num + 1))
+            batch_numbers = list(range(1, len(cpu_values) + 1))
             x_label='Request Number'
         bw_values = normalize(bw_values, 0, 1000)  # Adjust the max value based on your expected bandwidth
         cpu_values = normalize(cpu_values, 0, 100)
