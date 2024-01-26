@@ -5,9 +5,10 @@ import time
 import random
 import psutil
 import threading
+import numpy as np
 
 class WorkloadCreator():
-    def __init__(self,cpu_each_batch=[],ram_each_batch=[],bw_each_batch=[],cpu_each_request=[],ram_each_request=[],bw_each_request=[],cpu_average_method_post=0,ram_average_method_post=0,bw_average_method_post=0,cpu_average_method_get=0,ram_average_method_get=0,bw_average_method_get=0,cpu_average_method_put=0,ram_average_method_put=0,bw_average_method_put=0,cpu_average_method_delete=0,ram_average_method_delete=0,bw_average_method_delete=0,response_times=[],batches_num=5,request_num=10,sleep_time=0,timestamp=None):
+    def __init__(self,cpu_each_batch=[],ram_each_batch=[],bw_each_batch=[],cpu_each_request=[],ram_each_request=[],bw_each_request=[],cpu_average_method_post=0,ram_average_method_post=0,bw_average_method_post=0,cpu_average_method_get=0,ram_average_method_get=0,bw_average_method_get=0,cpu_average_method_put=0,ram_average_method_put=0,bw_average_method_put=0,cpu_average_method_delete=0,ram_average_method_delete=0,bw_average_method_delete=0,response_times=[],tail_latency=0,batches_num=5,request_num=10,sleep_time=0,timestamp=None):
         # Batch
         self.cpu_each_batch=cpu_each_batch
         self.ram_each_batch=ram_each_batch
@@ -34,6 +35,7 @@ class WorkloadCreator():
         self.bw_average_method_delete=bw_average_method_delete
 
         self.response_times=response_times
+        self.tail_latency=tail_latency
 
         self.batches_num=batches_num
         self.request_num=request_num
@@ -118,6 +120,10 @@ class WorkloadCreator():
     def get_response_times(self):
         return self.response_times
 
+    def get_tail_latency(self):
+        return self.tail_latency
+
+
     def get_timestamp(self):
         self.timestamp=time.ctime(time.time())
         return self.timestamp
@@ -200,9 +206,8 @@ class WorkloadCreator():
                 else:
                     current_batch_size = random.randint(1, max_batch_size)
                     batch_size = current_batch_size
-            else: #TODO
+            else:
                 batch_size = self.request_num // self.batches_num
-
                 if i == random.randint(1,self.batches_num):
                     batch_size *= 7  # x7 the requests in the peak batch
 
@@ -249,12 +254,16 @@ class WorkloadCreator():
             self.ram_each_batch.append(ram_batch_sum/batch_size)
             self.bw_each_batch.append(bw_batch_sum/batch_size)
             self.response_times.append(response_times_sum)
+
             if self.sleep_time==-1:
                 time.sleep(random.int(1,5))  # Sleep time between each batch
             elif self.sleep_time!=0:
                 time.sleep(self.sleep_time)
             else:
                 continue
+
+        sorted_response_times = sorted(self.response_times)
+        self.tail_latency = np.percentile(sorted_response_times, 95)
         if post_count==0:
             post_count=1
         if get_count==0:
@@ -279,16 +288,6 @@ class WorkloadCreator():
 
         # self.printResults(cpu_per_batch_means,ram_per_batch_means,bw_per_batch_means,response_times)
         return futures
-
-    def printResults(self,cpu_per_batch_means,ram_per_batch_means,bw_per_batch_means,response_time_list):
-        print(f'Average CPU per batch:{cpu_per_batch_means}')
-        print(f'Average RAM per batch:{ram_per_batch_means}')
-        print(f'Average BW per batch:{bw_per_batch_means}')
-
-        print(f'Average CPU of load: {sum(cpu_per_batch_means)/len(cpu_per_batch_means)}')
-        print(f'Average RAM of load: {sum(ram_per_batch_means)/len(ram_per_batch_means)}')
-        print(f'Average BW of load: {sum(bw_per_batch_means)/len(bw_per_batch_means)}\n')
-        print(f'Average Response time of load: {sum(response_time_list)/len(response_time_list)}\n')
 
 def create_request(endpoint, method, payload):
     url = f"http://localhost:5000/{endpoint}"

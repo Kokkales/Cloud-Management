@@ -10,12 +10,10 @@ def normalize(value, min_value, max_value):
 
 class Plotter:
 
-    def __init__(self,request_num=10,batches_num=5,sleep_time=0):
-        self.request_num=request_num
-        self.batches_num=batches_num
+    def __init__(self,sleep_time=0):
         self.sleep_time=sleep_time
 
-    def plot_cpu_ram_bw(self,cpu_values,ram_values,bw_values,type='batches',method='Normal'):
+    def plot_cpu_ram_bw(self,cpu_values,ram_values,bw_values,type='batches',method='normal'):
         if type == 'batches':
             # batch_numbers = list(range(1, self.batches_num + 1))
             batch_numbers = list(range(1, len(cpu_values) + 1))
@@ -57,26 +55,6 @@ class Plotter:
         # Display the subplots
         plt.show()
 
-    # def plot_request_oriented(self,cpu_values,ram_values,bw_values):
-    #     batch_numbers = list(range(1,self.request_num + 1))
-    #     bw_values = normalize(bw_values, 0, 1000)  # Adjust the max value based on your expected bandwidth
-    #     cpu_values = normalize(cpu_values, 0, 100)
-    #     ram_values = normalize(ram_values, 0, 100)
-
-    #     # Plotting CPU
-    #     plt.plot(batch_numbers,cpu_values, marker='o', label='CPU')
-    #     # Plotting RAM
-    #     plt.plot(batch_numbers,ram_values, marker='o', label='RAM')
-    #     # Plotting BW
-    #     plt.plot(batch_numbers,bw_values, marker='o', label='BW')
-
-    #     plt.title('Performance Metrics Over Batches')
-    #     plt.xlabel('Batch Number')
-    #     plt.ylabel('Usage')
-    #     plt.grid(True)
-    #     plt.legend()
-    #     plt.show()
-
     def plot_time_oriented():
         return
 
@@ -106,30 +84,18 @@ class Plotter:
         plt.legend()
         # Save the figure
         plt.savefig(f'./plots/requestTypes{method}')
-        # Display the chart
-        # plt.show()
-        # categories = ['GET', 'POST', 'PUT', 'DELETE']
-        # values = [post_value,get_value,put_value,delete_value]
-
-        # # Plotting the column chart
-        # plt.bar(categories, values, color='blue')
-
-        # # Adding labels and title
-        # plt.xlabel('Request Type')
-        # plt.ylabel('Values')
-        # plt.title('CPU Usage from each request type')
 
         # # Display the chart
         plt.show()
         # return
 
-    def plot_latency(self,response_time,tail_latency):
+    def plot_final_results(self,stable_response_times,stable_tail_latency,normal_response_times,normal_tail_latency,peak_response_times,peak_tail_latency):
         # Sample data for the table
         data = [
             ['Workload Type', 'Total Response Time','Average Response Time','Tail latency'],
-            ['John', 25, 'New York', 'New York'],
-            ['Alice', 30, 'Los Angeles', 'New York'],
-            ['Bob', 22, 'Chicago', 'New York']
+            ['Stable', sum(stable_response_times), sum(stable_response_times)/len(stable_response_times),stable_tail_latency],
+            ['Normal', sum(normal_response_times), sum(normal_response_times)/len(normal_response_times),normal_tail_latency],
+            ['Peak', sum(peak_response_times),sum(peak_response_times)/len(peak_response_times),peak_tail_latency]
         ]
 
         # Create a figure and axis
@@ -147,7 +113,7 @@ class Plotter:
 
         # Adjust the cell heights and widths
         table.scale(1, 1.5)
-
+        plt.savefig(f'./plots/finalResultsTable')
         # Display the table
-        # plt.show()
+        plt.show()
         return
