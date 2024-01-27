@@ -21,6 +21,7 @@ for i in range(0,num_of_exp):
     sleep_time_se = int(input("Sleep time: "))
 
     # create folder for report
+    os.makedirs(f'./Plots/', exist_ok=True)
     os.makedirs(f'./Plots/experiment{i}/', exist_ok=True)
     workload_creator = WorkloadCreator(request_num=number_of_req, batches_num=number_of_batches, sleep_time=sleep_time_se)  # -1 means random sleep time in each batch
     rpg=ReportGenerator(folder_path=f'./plots/experiment{i}/')
