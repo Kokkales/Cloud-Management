@@ -259,7 +259,7 @@ class WorkloadCreator():
             self.response_times.append(response_times_sum)
 
             if self.sleep_time==-1:
-                time.sleep(random.int(1,5))  # Sleep time between each batch
+                time.sleep(random.randint(1,5))  # Sleep time between each batch
             elif self.sleep_time!=0:
                 time.sleep(self.sleep_time)
             else:
