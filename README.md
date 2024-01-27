@@ -7,13 +7,13 @@
 <p>1. Create Virtual Environment</p>
 
 ```
-pip install virtualenv  python3 -m venv venv
-
-# Activate the virtual environment
-# On Windows:
-.venv\Scripts\activate
 # On macOS/Linux:
-source .venv/bin/activate
+python3 -m venv .venv
+. .venv/bin/activate
+
+# On Windows:
+py -3 -m venv .venv
+.venv\Scripts\activate
 ```
 
 <p>2. Install Necessary Requirements</p>
