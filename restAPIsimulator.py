@@ -18,7 +18,7 @@ for i in range(0,1):
 
     # create folder for report
     os.makedirs(f'./plots/experiment{i}/', exist_ok=True)
-    workload_creator = WorkloadCreator(request_num=20, batches_num=5, sleep_time=0)  # -1 means random sleep time in each batch
+    workload_creator = WorkloadCreator(request_num=50, batches_num=5, sleep_time=0)  # -1 means random sleep time in each batch
     rpg=ReportGenerator(folder_path=f'./plots/experiment{i}/')
 
 

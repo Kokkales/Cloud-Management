@@ -59,17 +59,17 @@ class ReportGenerator:
             timestamp_match = re.search(r'Timestamp: (.+)', content)
             if timestamp_match:
                 timestamp = timestamp_match.group(1)
-                print(f'Timestamp: {timestamp}')
+                # print(f'Timestamp: {timestamp}')
 
             id_match = re.search(r'ID: (.+)', content)
             if id_match:
                 id = id_match.group(1)
-                print(f'id: {id}')
+                # print(f'id: {id}')
 
             load_type_match = re.search(r'Load Type: (.+)', content)
             if load_type_match:
                 load_type = load_type_match.group(1)
-                print(f'load_type: {load_type}')
+                # print(f'load_type: {load_type}')
 
             requests_match = re.search(r'Requests Number:(\d+)', content)
             batches_match = re.search(r'Batches Number:(\d+)', content)
@@ -78,107 +78,107 @@ class ReportGenerator:
                 requests_number = int(requests_match.group(1))
                 batches_number = int(batches_match.group(1))
                 sleep_time = sleep_time_match.group(1)
-                print(f"Concept\nRequests Number: {requests_number}\nBatches Number: {batches_number}\nSleep time: {sleep_time}")
+                # print(f"Concept\nRequests Number: {requests_number}\nBatches Number: {batches_number}\nSleep time: {sleep_time}")
 
             # Extract and visualize other data as needed
             batch_cpu_match = re.search(r'BATCH CPU: (.+)', content)
             if batch_cpu_match:
                 batch_cpu_data =ast.literal_eval(batch_cpu_match.group(1))
-                print(f'BATCH CPU Data: {batch_cpu_data}')
+                # print(f'BATCH CPU Data: {batch_cpu_data}')
             batch_ram_match = re.search(r'BATCH RAM: (.+)', content)
             if batch_ram_match:
                 batch_ram_data =ast.literal_eval(batch_ram_match.group(1))
-                print(f'BATCH RAM Data: {batch_ram_data}')
+                # print(f'BATCH RAM Data: {batch_ram_data}')
 
             batch_bw_match = re.search(r'BATCH BW: (.+)', content)
             if batch_bw_match:
                 batch_bw_data =ast.literal_eval(batch_bw_match.group(1))
-                print(f'BATCH BW Data: {batch_bw_data}')
+                # print(f'BATCH BW Data: {batch_bw_data}')
 
             requests_cpu_match = re.search(r'REQUEST CPU: (.+)', content)
             if requests_cpu_match:
                 requests_cpu_data =ast.literal_eval(requests_cpu_match.group(1))
-                print(f'REQUESTS CPU Data: {requests_cpu_data}')
+                # print(f'REQUESTS CPU Data: {requests_cpu_data}')
 
             requests_ram_match = re.search(r'REQUEST RAM: (.+)', content)
             if requests_ram_match:
                 requests_ram_data =ast.literal_eval(requests_ram_match.group(1))
-                print(f'REQUESTS RAM Data: {requests_ram_data}')
+                # print(f'REQUESTS RAM Data: {requests_ram_data}')
 
             requests_bw_match = re.search(r'REQUEST BW: (.+)', content)
             if requests_bw_match:
                 requests_bw_data =ast.literal_eval(requests_bw_match.group(1))
-                print(f'REQUESTS BW Data: {requests_bw_data}')
+                # print(f'REQUESTS BW Data: {requests_bw_data}')
 
             avg_post_cpu_match = re.search(r'POST Avg CPU: (.+)', content)
             if avg_post_cpu_match:
                 avg_post_cpu_data =ast.literal_eval(avg_post_cpu_match.group(1))
-                print(f'Avg POST CPU Data: {avg_post_cpu_data}')
+                # print(f'Avg POST CPU Data: {avg_post_cpu_data}')
 
             avg_post_ram_match = re.search(r'POST Avg RAM: (.+)', content)
             if avg_post_ram_match:
                 avg_post_ram_data =ast.literal_eval(avg_post_ram_match.group(1))
-                print(f'Avg POST RAM Data: {avg_post_ram_data}')
+                # print(f'Avg POST RAM Data: {avg_post_ram_data}')
 
             avg_post_bw_match = re.search(r'POST Avg BW: (.+)', content)
             if avg_post_bw_match:
                 avg_post_bw_data =ast.literal_eval(avg_post_bw_match.group(1))
-                print(f'Avg POST BW Data: {avg_post_bw_data}')
+                # print(f'Avg POST BW Data: {avg_post_bw_data}')
 
             avg_get_cpu_match = re.search(r'GET Avg CPU: (.+)', content)
             if avg_get_cpu_match:
                 avg_get_cpu_data =ast.literal_eval(avg_get_cpu_match.group(1))
-                print(f'Avg GET CPU Data: {avg_get_cpu_data}')
+                # print(f'Avg GET CPU Data: {avg_get_cpu_data}')
 
             avg_get_ram_match = re.search(r'GET Avg RAM: (.+)', content)
             if avg_get_ram_match:
                 avg_get_ram_data =ast.literal_eval(avg_get_ram_match.group(1))
-                print(f'Avg GET RAM Data: {avg_get_ram_data}')
+                # print(f'Avg GET RAM Data: {avg_get_ram_data}')
 
             avg_get_bw_match = re.search(r'GET Avg BW: (.+)', content)
             if avg_get_bw_match:
                 avg_get_bw_data =ast.literal_eval(avg_get_bw_match.group(1))
-                print(f'Avg GET BW Data: {avg_get_bw_data}')
+                # print(f'Avg GET BW Data: {avg_get_bw_data}')
 
             avg_put_cpu_match = re.search(r'PUT Avg CPU: (.+)', content)
             if avg_put_cpu_match:
                 avg_put_cpu_data =ast.literal_eval(avg_put_cpu_match.group(1))
-                print(f'Avg PUT CPU Data: {avg_put_cpu_data}')
+                # print(f'Avg PUT CPU Data: {avg_put_cpu_data}')
 
             avg_put_ram_match = re.search(r'PUT Avg RAM: (.+)', content)
             if avg_put_ram_match:
                 avg_put_ram_data =ast.literal_eval(avg_put_ram_match.group(1))
-                print(f'Avg PUT RAM Data: {avg_put_ram_data}')
+                # print(f'Avg PUT RAM Data: {avg_put_ram_data}')
 
             avg_put_bw_match = re.search(r'PUT Avg BW: (.+)', content)
             if avg_put_bw_match:
                 avg_put_bw_data =ast.literal_eval(avg_put_bw_match.group(1))
-                print(f'Avg PUT BW Data: {avg_put_bw_data}')
+                # print(f'Avg PUT BW Data: {avg_put_bw_data}')
 
             avg_delete_cpu_match = re.search(r'DELETE Avg CPU: (.+)', content)
             if avg_delete_cpu_match:
                 avg_delete_cpu_data =ast.literal_eval(avg_delete_cpu_match.group(1))
-                print(f'Avg DELETE CPU Data: {avg_delete_cpu_data}')
+                # print(f'Avg DELETE CPU Data: {avg_delete_cpu_data}')
 
             avg_delete_ram_match = re.search(r'DELETE Avg RAM: (.+)', content)
             if avg_delete_ram_match:
                 avg_delete_ram_data =ast.literal_eval(avg_delete_ram_match.group(1))
-                print(f'Avg DELETE RAM Data: {avg_delete_ram_data}')
+                # print(f'Avg DELETE RAM Data: {avg_delete_ram_data}')
 
             avg_delete_bw_match = re.search(r'DELETE Avg BW: (.+)', content)
             if avg_delete_bw_match:
                 avg_delete_bw_data =ast.literal_eval(avg_delete_bw_match.group(1))
-                print(f'Avg DELETE BW Data: {avg_delete_bw_data}')
+                # print(f'Avg DELETE BW Data: {avg_delete_bw_data}')
 
             response_time_match = re.search(r'Response Time:: (.+)', content)
             if response_time_match:
                 response_time_data =ast.literal_eval(response_time_match.group(1))
-                print(f'Response Time Data: {response_time_data}')
+                # print(f'Response Time Data: {response_time_data}')
 
             tail_latency_match = re.search(r'Tail Latency:: (.+)', content)
             if tail_latency_match:
                 tail_latency_data =ast.literal_eval(tail_latency_match.group(1))
-                print(f'Tail Latency Data: {tail_latency_data}')
+                # print(f'Tail Latency Data: {tail_latency_data}')
 
             # Visualize data
             if batch_cpu_data and batch_ram_data and batch_bw_data:

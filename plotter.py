@@ -27,6 +27,7 @@ class Plotter:
         ram_values = normalize(ram_values, 0, 100)
 
         # Create a 1x2 grid of subplots
+        plt.figure('1')
         fig, axs = plt.subplots(1, 2, figsize=(12, 5))
 
         # Plotting CPU and RAM on the first subplot
@@ -48,15 +49,14 @@ class Plotter:
 
         # Adjust layout to prevent clipping of titles
         plt.tight_layout()
-        print(f"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA{folder_path}{type}{method}.jpg")
         # Save the figure
         plt.savefig(f'{folder_path}{type}{method}.jpg')
 
         # Display the subplots
-        plt.show()
+        # plt.show()
 
-    def plot_time_oriented():
         return
+
 
     def plot_request_types_usage(self,folder_path,cpu_post_value,cpu_get_value,cpu_put_value,cpu_delete_value,ram_post_value,ram_get_value,ram_put_value,ram_delete_value,method):
         # Sample data
@@ -70,7 +70,7 @@ class Plotter:
         # Set the positions of bars on X-axis
         r1 = np.arange(len(categories))
         r2 = [x + bar_width for x in r1]
-
+        plt.figure('2')
         # Plotting the double bar chart
         plt.bar(categories, values1, color='blue', width=bar_width, edgecolor='grey', label='CPU')
         plt.bar(r2, values2, color='orange', width=bar_width, edgecolor='grey', label='RAM')
@@ -86,8 +86,8 @@ class Plotter:
         plt.savefig(f'{folder_path}requestTypes{method}.jpg')
 
         # # Display the chart
-        plt.show()
-        # return
+        # plt.show()
+        return
 
     def plot_final_results(self,folder_path,stable_response_times,stable_tail_latency,normal_response_times,normal_tail_latency,peak_response_times,peak_tail_latency):
         # Sample data for the table
@@ -99,6 +99,7 @@ class Plotter:
         ]
 
         # Create a figure and axis
+        plt.figure('3')
         fig, ax = plt.subplots()
 
         # Hide the axes
@@ -115,5 +116,5 @@ class Plotter:
         table.scale(1, 1.5)
         plt.savefig(f'{folder_path}finalResultsTable.jpg')
         # Display the table
-        plt.show()
+        # plt.show()
         return
