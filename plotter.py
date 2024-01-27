@@ -92,14 +92,15 @@ class Plotter:
     def plot_final_results(self,folder_path,stable_response_times,stable_tail_latency,normal_response_times,normal_tail_latency,peak_response_times,peak_tail_latency):
         # Sample data for the table
         data = [
-            ['Workload Type', 'Total Response Time','Average Response Time','Tail latency'],
-            ['Stable', sum(stable_response_times), sum(stable_response_times)/len(stable_response_times),stable_tail_latency],
-            ['Normal', sum(normal_response_times), sum(normal_response_times)/len(normal_response_times),normal_tail_latency],
-            ['Peak', sum(peak_response_times),sum(peak_response_times)/len(peak_response_times),peak_tail_latency]
+            ['Workload Type', 'Total Response Time', 'Average Response Time', 'Tail latency'],
+            ['Stable', sum(stable_response_times), sum(stable_response_times) / len(stable_response_times),
+            stable_tail_latency],
+            ['Normal', sum(normal_response_times), sum(normal_response_times) / len(normal_response_times),
+            normal_tail_latency],
+            ['Peak', sum(peak_response_times), sum(peak_response_times) / len(peak_response_times), peak_tail_latency]
         ]
 
         # Create a figure and axis
-        plt.figure('3', figsize=(30,10))
         fig, ax = plt.subplots(figsize=(10, 5))
 
         # Hide the axes
@@ -112,11 +113,19 @@ class Plotter:
         table.auto_set_font_size(False)
         table.set_fontsize(12)
 
+        # Adjust the cell heights and widths based on content
+        for i, key in enumerate(table.get_celld().keys()):
+            cell = table[key]
+            if i == 0:  # Header row
+                cell.set_fontsize(14)
+                cell.set_text_props(weight='bold')
+                cell.set_facecolor('#f2f2f2')  # Gray background for header
+            else:  # Data rows
+                cell.set_fontsize(12)
+
         # Adjust the cell heights and widths
-        table.scale(1, 1)
+        table.auto_set_column_width([0, 1, 2, 3])
 
         # Save the figure
-        plt.savefig('finalResultsTable.jpg')
-        # Display the table
-        # plt.show()
-        return
+        plt.savefig(folder_path + '/finalResultsTable.jpg')
+        # plt.show()  # Display the plot
