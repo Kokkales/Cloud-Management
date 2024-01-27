@@ -99,8 +99,8 @@ class Plotter:
         ]
 
         # Create a figure and axis
-        plt.figure('3')
-        fig, ax = plt.subplots()
+        plt.figure('3', figsize=(30,10))
+        fig, ax = plt.subplots(figsize=(10, 5))
 
         # Hide the axes
         ax.axis('off')
@@ -113,8 +113,10 @@ class Plotter:
         table.set_fontsize(12)
 
         # Adjust the cell heights and widths
-        table.scale(1, 1.5)
-        plt.savefig(f'{folder_path}finalResultsTable.jpg')
+        table.scale(1, 1)
+
+        # Save the figure
+        plt.savefig('finalResultsTable.jpg')
         # Display the table
         # plt.show()
         return

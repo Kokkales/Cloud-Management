@@ -98,7 +98,7 @@ class Monitoring(BasicMonitoring):
       two_metrics.append(cpu)
       two_metrics.append(ram)
       all_metrics.append(two_metrics)
-      print(two_metrics)
+      # print(two_metrics)
 
     with open(filepath, 'w') as f:
         writer = csv.writer(f)

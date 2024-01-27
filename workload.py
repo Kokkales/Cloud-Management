@@ -136,9 +136,8 @@ class WorkloadCreator():
             {'method': 'PUT', 'endpoint': 'put', 'payload': {'key': 'value'}},
         ]
         return [random.choice(batch) for _ in range(batch_size)]
-
     def create_load(self,load_type='normal'):
-        print(f"Loading {load_type} workload...!")
+        print(f"Loading {load_type} workload...")
         # self.__init__()
         # Batch init
         self.cpu_each_batch=[]
@@ -183,6 +182,7 @@ class WorkloadCreator():
         futures = []
         batch_size_sum=0
         new_req_num=self.request_num
+        isPeaked=False
         for i in range(self.batches_num):
             # stats
             cpu_batch_sum=0
@@ -208,9 +208,11 @@ class WorkloadCreator():
                     batch_size = current_batch_size
             else:
                 batch_size = self.request_num // self.batches_num
-                if i == random.randint(1,self.batches_num):
+                if (i == random.randint(1,self.batches_num-1) and isPeaked==False) or (self.batches_num-1==i and isPeaked==False):
                     print(f"Peak Batch Number: {i}")
                     batch_size *= 3  # x3 the requests in the peak batch
+                    isPeaked=True
+
 
             batch = self.create_batch(batch_size)
             for k in range(batch_size):
