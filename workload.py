@@ -138,6 +138,7 @@ class WorkloadCreator():
         return [random.choice(batch) for _ in range(batch_size)]
 
     def create_load(self,load_type='normal'):
+        print(f"Loading {load_type} workload...!")
         # self.__init__()
         # Batch init
         self.cpu_each_batch=[]
@@ -178,7 +179,6 @@ class WorkloadCreator():
 
         self.response_times = []
 
-        print(f"{load_type}------------------------------------------")
 
         futures = []
         batch_size_sum=0
@@ -209,7 +209,8 @@ class WorkloadCreator():
             else:
                 batch_size = self.request_num // self.batches_num
                 if i == random.randint(1,self.batches_num):
-                    batch_size *= 7  # x7 the requests in the peak batch
+                    print(f"Peak Batch Number: {i}")
+                    batch_size *= 3  # x3 the requests in the peak batch
 
             batch = self.create_batch(batch_size)
             for k in range(batch_size):
@@ -286,6 +287,7 @@ class WorkloadCreator():
         self.ram_average_method_delete=ram_sum_method_delete/delete_count
         self.bw_average_method_delete=bw_sum_method_delete/delete_count
 
+        print(f"{load_type} workload has been succesfully completed!")
         # self.printResults(cpu_per_batch_means,ram_per_batch_means,bw_per_batch_means,response_times)
         return futures
 

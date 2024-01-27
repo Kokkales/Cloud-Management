@@ -2,14 +2,26 @@ from concurrent.futures import ThreadPoolExecutor, wait, FIRST_COMPLETED
 from workload import WorkloadCreator
 from generateReport import ReportGenerator
 import os
+import sys
+
+# Take the system arguments
+# arg1=Number of experiments
+# for arg in sys.argv:
+#     print(arg)
 
 id=0
 file_path = 'simulatorResults.txt'
-for i in range(0,2):
+for i in range(0,1):
+    # arg2=Number of erquests
+    # arg3=Nimber of batches
+    # arg4=Number of sleep time
+
     # create folder for report
     os.makedirs(f'./plots/experiment{i}/', exist_ok=True)
-    workload_creator = WorkloadCreator(request_num=5, batches_num=3, sleep_time=0)  # -1 means random sleep time in each batch
+    workload_creator = WorkloadCreator(request_num=20, batches_num=5, sleep_time=0)  # -1 means random sleep time in each batch
     rpg=ReportGenerator(folder_path=f'./plots/experiment{i}/')
+
+
     # Stable Load
     load_type='stable'
     stable_futures = workload_creator.create_load(load_type=load_type)
@@ -33,6 +45,8 @@ for i in range(0,2):
     # for final plot
     normal_tail_latency=workload_creator.get_tail_latency()
     normal_response_times=workload_creator.get_response_times()
+
+
 
     # Peak Load
     load_type='peak'
