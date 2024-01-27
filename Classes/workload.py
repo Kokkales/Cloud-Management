@@ -1,5 +1,5 @@
 from concurrent.futures import ThreadPoolExecutor, wait, FIRST_COMPLETED
-from BasicMonitoring import Monitoring
+from Classes.BasicMonitoring import Monitoring
 import requests
 import time
 import random

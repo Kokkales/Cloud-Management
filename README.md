@@ -10,7 +10,8 @@
 pip install virtualenv  python3 -m venv venv
 
 # Activate the virtual environment
- # On Windows:  .venv\Scripts\activate
+# On Windows:
+.venv\Scripts\activate
 # On macOS/Linux:
 source .venv/bin/activate
 ```
@@ -18,7 +19,7 @@ source .venv/bin/activate
 <p>2. Install Necessary Requirements</p>
 
 ```
-pip install -r requirements.txt
+pip install -r ./Other_files/requirements.txt
 ```
 
 <p>3. Run Server</p>
@@ -30,7 +31,7 @@ python3 server.py
 <p>4. Run Simulator</p>
 
 ```
-python3 restAPIsimulator.py
+python3 main.py
 ```
 
 <h2>💻 Built with</h2>

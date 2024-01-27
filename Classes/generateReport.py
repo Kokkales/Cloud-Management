@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 import re
 import ast
-from plotter import Plotter
+from Classes.plotter import Plotter
 
 class ReportGenerator:
     def __init__(self,folder_path):
