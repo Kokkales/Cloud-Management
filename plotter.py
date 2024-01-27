@@ -61,19 +61,27 @@ class Plotter:
     def plot_request_types_usage(self,folder_path,cpu_post_value,cpu_get_value,cpu_put_value,cpu_delete_value,ram_post_value,ram_get_value,ram_put_value,ram_delete_value,method):
         # Sample data
         categories = ['GET', 'POST', 'PUT', 'DELETE']
-        values1 = [cpu_post_value,cpu_get_value,cpu_put_value,cpu_delete_value]
-        values2 = [ram_post_value,ram_get_value,ram_put_value,ram_delete_value]
+        values1 = [cpu_post_value, cpu_get_value, cpu_put_value, cpu_delete_value]
+        values2 = [ram_post_value, ram_get_value, ram_put_value, ram_delete_value]
 
         # Width of the bars
         bar_width = 0.35
 
         # Set the positions of bars on X-axis
-        r1 = np.arange(len(categories))
+        r1 = range(len(categories))
         r2 = [x + bar_width for x in r1]
-        plt.figure('2')
+
         # Plotting the double bar chart
-        plt.bar(categories, values1, color='blue', width=bar_width, edgecolor='grey', label='CPU')
+        plt.figure('2')
+        plt.bar(r1, values1, color='blue', width=bar_width, edgecolor='grey', label='CPU')
         plt.bar(r2, values2, color='orange', width=bar_width, edgecolor='grey', label='RAM')
+
+        # Adding labels on top of each bar
+        for i, (value1, value2) in enumerate(zip(values1, values2)):
+            if value1 != 0:
+                plt.text(i, value1, f'{round(value1, 2)}', ha='center', va='bottom', fontweight='bold', color='black')
+            if value2 != 0:
+                plt.text(i + bar_width, value2, f'{round(value2, 2)}', ha='center', va='bottom', fontweight='bold', color='black')
 
         # Adding labels and title
         plt.xlabel('Categories')
@@ -82,11 +90,10 @@ class Plotter:
 
         # Adding legend
         plt.legend()
+
         # Save the figure
         plt.savefig(f'{folder_path}requestTypes{method}.jpg')
-
-        # # Display the chart
-        # plt.show()
+        plt.clf()
         return
 
     def plot_final_results(self,folder_path,stable_response_times,stable_tail_latency,normal_response_times,normal_tail_latency,peak_response_times,peak_tail_latency):
