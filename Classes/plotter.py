@@ -73,7 +73,7 @@ class Plotter:
 
         # Plotting the double bar chart
         plt.figure('2')
-        plt.bar(r1, values1, color='blue', width=bar_width, edgecolor='grey', label='CPU')
+        plt.bar(categories, values1, color='blue', width=bar_width, edgecolor='grey', label='CPU')
         plt.bar(r2, values2, color='orange', width=bar_width, edgecolor='grey', label='RAM')
 
         # Adding labels on top of each bar

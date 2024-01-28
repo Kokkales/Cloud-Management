@@ -31,7 +31,9 @@ python3 server.py
 <p>4. Run Simulator</p>
 
 ```
-python3 main.py
+python3 main.py 1 a
+
+#exapmle: python3 main.py <#number of experiments> <type of workloads a=all, p=peak, n=normal, s=stable>
 ```
 
 <h2>💻 Built with</h2>
