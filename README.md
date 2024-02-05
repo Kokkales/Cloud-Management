@@ -31,10 +31,16 @@ python3 server.py
 <p>4. Run Simulator</p>
 
 ```
-python3 main.py 1 a
+python3 main.py 1 a nostress
 
-#exapmle: python3 main.py <#number of experiments> <type of workloads a=all, p=peak, n=normal, s=stable>
+#exapmle: python3 main.py <#number of experiments> <type of workloads a=all, p=peak, n=normal, s=stable> <stress/nostress>
 ```
+
+<p>5. Test with different load sizes using locus.io framework</p>
+```
+$locust
+```
+After running the command open http://localhost:8089
 
 <h2>💻 Built with</h2>
 
