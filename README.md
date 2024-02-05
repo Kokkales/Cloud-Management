@@ -37,9 +37,11 @@ python3 main.py 1 a nostress
 ```
 
 <p>5. Test with different load sizes using locus.io framework</p>
+
 ```
 $locust
 ```
+
 After running the command open http://localhost:8089
 
 <h2>💻 Built with</h2>
